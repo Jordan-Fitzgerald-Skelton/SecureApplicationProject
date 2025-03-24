@@ -3,26 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Secure Version</title>
+    <title>Insecure App</title>
 </head>
 <body>
     <h2>Signup</h2>
-    <form id="secureSignupForm">
-        <input type="text" id="secureSignupEmail" placeholder="Email">
-        <input type="password" id="secureSignupPassword" placeholder="Password">
+    <form id="insecureSignupForm">
+        <input type="text" id="insecureSignupEmail" placeholder="Email">
+        <input type="password" id="insecureSignupPassword" placeholder="Password">
         <button type="submit">Signup</button>
     </form>
 
     <h2>Login</h2>
-    <form id="secureLoginForm">
-        <input type="text" id="secureEmail" placeholder="Email">
-        <input type="password" id="securePassword" placeholder="Password">
+    <form id="insecureLoginForm">
+        <input type="text" id="insecureEmail" placeholder="Email">
+        <input type="password" id="insecurePassword" placeholder="Password">
         <button type="submit">Login</button>
     </form>
 
-    <h2>User Profile</h2>
-    <button onclick="viewSecureProfile()">View Profile</button>
-    <div id="secureProfileResult"><p>Click to see your details.</p></div>
+    <h2>Profile</h2>
+    <input type="text" id="insecureProfileName" placeholder="Enter your name">
+    <button onclick="viewInsecureProfile()">View Profile</button>
+    <div id="insecureProfileResult"></div>
 
     <script src="script.js"></script>
 </body>

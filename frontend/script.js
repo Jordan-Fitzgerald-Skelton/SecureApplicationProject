@@ -1,67 +1,43 @@
-//Signup
-document.getElementById("secureSignupForm").addEventListener("submit", function (event) {
+//Signup (no input validation)
+document.getElementById("insecureSignupForm").addEventListener("submit", function (event) {
     event.preventDefault();
-    const emailInput = document.getElementById("secureSignupEmail");
-    const passwordInput = document.getElementById("secureSignupPassword");
+    const email = document.getElementById("insecureSignupEmail").value;
+    const password = document.getElementById("insecureSignupPassword").value;
 
-    fetch("http://localhost:4000/register", {
+    fetch("http://localhost:3000/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: emailInput.value, password: passwordInput.value }),
+        body: JSON.stringify({ email, password }),
     })
     .then(response => response.text())
-    .then(data => {
-        alert(data);
-        emailInput.value = "";
-        passwordInput.value = "";
-    })
+    .then(data => alert(data))
     .catch(error => console.error("Error:", error));
 });
 
-//Login
-document.getElementById("secureLoginForm").addEventListener("submit", function (event) {
+//Login (SQL injection)
+document.getElementById("insecureLoginForm").addEventListener("submit", function (event) {
     event.preventDefault();
-    const emailInput = document.getElementById("secureEmail");
-    const passwordInput = document.getElementById("securePassword");
+    const email = document.getElementById("insecureEmail").value;
+    const password = document.getElementById("insecurePassword").value;
 
-    fetch("http://localhost:4000/login", {
+    fetch("http://localhost:3000/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: emailInput.value, password: passwordInput.value }),
+        body: JSON.stringify({ email, password }),
     })
-    .then(response => response.json())
-    .then(data => {
-        if (data.token) {
-            localStorage.setItem("token", data.token);
-            alert("Login successful");
-            emailInput.value = "";
-            passwordInput.value = "";
-        } else {
-            alert("Invalid credentials");
-        }
-    })
+    .then(response => response.text())
+    .then(data => alert(data))
     .catch(error => console.error("Error:", error));
 });
 
-//Profile
-function viewSecureProfile() {
-    const token = localStorage.getItem("token");
-    if (!token) {
-        alert("Please log in first");
-        return;
-    }
+//Profile (XSS and plain text user info)
+function viewInsecureProfile() {
+    const userId = document.getElementById("insecureProfileName").value;
 
-    fetch("http://localhost:4000/profile", {
-        headers: { "Authorization": `Bearer ${token}` }
-    })
-    .then(response => response.json())
+    fetch(`http://localhost:3000/profile?id=${userId}`) //(no authentication)
+    .then(response => response.text()) //retrived in plain text
     .then(data => {
-        document.getElementById("secureProfileResult").innerHTML = `
-            <p><strong>ID:</strong> ${data.id}</p>
-            <p><strong>Email:</strong> ${data.email}</p>
-            <p><strong>Password:</strong> ${data.password}</p>
-        `;
+        document.getElementById("insecureProfileResult").innerHTML = data; //(XSS)
     })
     .catch(error => console.error("Error:", error));
 }
-
