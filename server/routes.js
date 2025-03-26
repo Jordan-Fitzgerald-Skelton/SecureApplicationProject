@@ -25,7 +25,7 @@ router.post('/login', (req, res) => {
 //Profile (XSS and plain text user info)
 router.get('/profile', (req, res) => {
     const userId = req.query.id; //(no authentication)
-    db.get(`SELECT id, email, password FROM users WHERE id = ${userId}`, (err, user) => { // (SQL injection)
+    db.get(`SELECT id, email, password FROM users WHERE email = ${email}`, (err, user) => { // (SQL injection)
         if (err || !user) {
             return res.status(404).send('User not found.');
         }
