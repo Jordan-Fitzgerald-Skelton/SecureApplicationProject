@@ -32,9 +32,9 @@ document.getElementById("insecureLoginForm").addEventListener("submit", function
 
 //Profile (XSS and plain text user info)
 function viewInsecureProfile() {
-    const userId = document.getElementById("insecureProfileName").value;
+    const email = document.getElementById("insecureProfileName").value;
 
-    fetch(`http://localhost:3000/profile?id=${userId}`) //(no authentication)
+    fetch(`http://localhost:3000/profile?email=${email}`) //(no authentication)
     .then(response => response.text()) //retrived in plain text
     .then(data => {
         document.getElementById("insecureProfileResult").innerHTML = data; //(XSS)
