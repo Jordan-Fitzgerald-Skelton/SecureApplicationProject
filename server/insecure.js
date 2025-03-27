@@ -23,8 +23,13 @@ const db = new sqlite3.Database(':memory:', (err) => {
 // Registration (No hashing)
 app.post('/register', (req, res) => {
     const { email, password } = req.body;
-    db.run(`INSERT INTO users (email, password) VALUES ('${email}', '${password}')`);
-    res.send('User registered (insecure).');
+    db.run(`INSERT INTO users (email, password) VALUES (?, ?)`, [email, password], function (err) {
+        if (err) {
+            console.error('Database error:', err);
+            return res.status(500).send('Database error');
+        }
+        res.send('User registered (insecure).');
+    });
 });
 
 // Login (SQL injection)
@@ -42,7 +47,7 @@ app.post('/login', (req, res) => {
 // Profile (XSS, SQL injection no authentication)
 app.get('/profile', (req, res) => {
     const email = req.query.email;
-    db.get(`SELECT id, email, password FROM users WHERE email = '${email}'`, (err, user) => {
+    db.get(`SELECT id, email, password FROM users WHERE email = ?`, [email], (err, user) => {
         if (err || !user) {
             return res.status(404).send('User not found.');
         }

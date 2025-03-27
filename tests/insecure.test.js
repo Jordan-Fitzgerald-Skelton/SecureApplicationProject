@@ -1,7 +1,7 @@
 const { test, expect } = require('@playwright/test');
 
 test('Signup, login, and view profile', async ({ page }) => {
-    await page.goto('http://127.0.0.1:4000/'); // Change if using a different port
+    await page.goto('http://127.0.0.1:4001/'); // Change if using a different port
 
     // Signup
     await page.fill('#insecureSignupEmail', 'test@example.com');
@@ -26,7 +26,7 @@ test('Signup, login, and view profile', async ({ page }) => {
 });
 
 test('Login fails with incorrect password', async ({ page }) => {
-    await page.goto('http://127.0.0.1:4000/');
+    await page.goto('http://127.0.0.1:4001/');
 
     await page.fill('#insecureEmail', 'test@example.com');
     await page.fill('#insecurePassword', 'wrongpassword');
@@ -36,27 +36,30 @@ test('Login fails with incorrect password', async ({ page }) => {
     expect(alertMessage.message()).toContain('Invalid credentials');
 });
 
-test('SQL Injection on login', async ({ page }) => {
-    await page.goto('http://127.0.0.1:4000/');
+test('SQL Injection on login', async ({ request }) => {
+    const response = await request.post('http://127.0.0.1:3000/login', {
+        data: {
+            email: "' OR 1=1 --",
+            password: "anything"
+        }
+    });
 
-    await page.fill('#insecureEmail', "' OR 1=1 --");
-    await page.fill('#insecurePassword', 'anything');
-    await page.click('#insecureLoginForm button');
+    const responseBody = await response.text();
+    console.log("SQLi Response:", responseBody);
 
-    const alertMessage = await page.waitForEvent('dialog');
-    expect(alertMessage.message()).toContain('Login successful');
+    expect(responseBody).toContain('Login successful');
 });
 
-test('XSS in profile display', async ({ page }) => {
-    await page.goto('http://127.0.0.1:4000/');
+test('XSS in profile display', async ({ request }) => {
+    await request.post('http://127.0.0.1:3000/register', {
+        data: {
+            email: '<script>alert("XSS")</script>',
+            password: 'password123'
+        }
+    });
 
-    await page.fill('#insecureSignupEmail', "test<xss>@example.com");
-    await page.fill('#insecureSignupPassword', 'password123');
-    await page.click('#insecureSignupForm button');
+    const response = await request.get('http://127.0.0.1:3000/profile?email=<script>alert("XSS")</script>');
+    const body = await response.text();
 
-    await page.fill('#insecureProfileName', "<script>alert('XSS');</script>");
-    await page.click('button:has-text("View Profile")');
-
-    const alertMessage = await page.waitForEvent('dialog');
-    expect(alertMessage.message()).toContain('XSS');
+    expect(body).toContain('<script>alert("XSS")</script>');
 });
