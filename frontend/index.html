@@ -21,9 +21,11 @@
     </form>
 
     <h2>User Profile</h2>
-    <button onclick="viewSecureProfile()">View Profile</button>
+    <button id="viewProfileButton" style="display: none;" onclick="viewSecureProfile()">View Profile</button>
     <div id="secureProfileResult"><p>Click to see your details.</p></div>
 
+    <button onclick="logout()">Logout</button>
+    
     <script src="script.js"></script>
 </body>
 </html>
