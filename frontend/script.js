@@ -41,3 +41,9 @@ function viewInsecureProfile() {
     })
     .catch(error => console.error("Error:", error));
 }
+
+// Logout
+function logout() {
+    alert("Logged out successfully");
+    location.reload();
+}
