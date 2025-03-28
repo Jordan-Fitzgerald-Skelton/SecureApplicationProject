@@ -1,4 +1,4 @@
-// Function to check if user is logged in and update UI
+// Function to check if user is logged in
 function checkLoginStatus() {
     const token = localStorage.getItem("token");
     const profileButton = document.getElementById("viewProfileButton");
@@ -51,6 +51,7 @@ document.getElementById("secureLoginForm").addEventListener("submit", function (
             emailInput.value = "";
             passwordInput.value = "";
             checkLoginStatus();
+            document.getElementById("logoutButton").style.display = "block";        
         } else {
             alert("Invalid credentials");
         }
@@ -80,12 +81,19 @@ function viewSecureProfile() {
     .catch(error => console.error("Error:", error));
 }
 
-// Logout function
+// Logout
 function logout() {
     localStorage.removeItem("token");
+    document.getElementById("logoutButton").style.display = "none"; 
     alert("Logged out successfully");
-    checkLoginStatus(); // Update UI after logout
+    location.reload();
 }
 
-// Run on page load
-document.addEventListener("DOMContentLoaded", checkLoginStatus);
+document.addEventListener("DOMContentLoaded", () => {
+    checkLoginStatus();
+
+    if (!localStorage.getItem("token")) {
+        document.getElementById("secureProfileResult").innerHTML = "<p>Click to see your details.</p>";
+    }
+});
+

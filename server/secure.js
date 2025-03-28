@@ -11,7 +11,7 @@ const winston = require('winston');
 const xss = require('xss');
 
 dotenv.config();
-const JWT_SECRET = process.env.JWT_SECRET;
+const JWT_SECRET = process.env.JWT_SECRET || 'securekey';
 
 // Initialize Express
 const app = express();

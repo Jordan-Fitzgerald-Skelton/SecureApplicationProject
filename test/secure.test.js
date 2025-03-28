@@ -50,8 +50,17 @@ test('XSS attempt in profile should be sanitized', async ({ request }) => {
         }
     });
 
+    const loginResponse = await request.post(`${BASE_URL}/login`, {
+        data: {
+            email: '<script>alert("XSS")</script>',
+            password: 'password123'
+        }
+    });
+
+    const xssToken = (await loginResponse.json()).token;
+
     const response = await request.get(`${BASE_URL}/profile`, {
-        headers: { Authorization: `Bearer ${authToken}` }
+        headers: { Authorization: `Bearer ${xssToken}` }
     });
 
     const body = await response.text();
