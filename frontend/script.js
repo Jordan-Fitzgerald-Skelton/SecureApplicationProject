@@ -1,4 +1,18 @@
-//Signup
+// Function to check if user is logged in
+function checkLoginStatus() {
+    const token = localStorage.getItem("token");
+    const profileButton = document.getElementById("viewProfileButton");
+
+    if (profileButton) {
+        if (token) {
+            profileButton.style.display = "block";
+        } else {
+            profileButton.style.display = "none";
+        }
+    }
+}
+
+// Signup
 document.getElementById("secureSignupForm").addEventListener("submit", function (event) {
     event.preventDefault();
     const emailInput = document.getElementById("secureSignupEmail");
@@ -18,7 +32,7 @@ document.getElementById("secureSignupForm").addEventListener("submit", function 
     .catch(error => console.error("Error:", error));
 });
 
-//Login
+// Login
 document.getElementById("secureLoginForm").addEventListener("submit", function (event) {
     event.preventDefault();
     const emailInput = document.getElementById("secureEmail");
@@ -36,6 +50,8 @@ document.getElementById("secureLoginForm").addEventListener("submit", function (
             alert("Login successful");
             emailInput.value = "";
             passwordInput.value = "";
+            checkLoginStatus();
+            document.getElementById("logoutButton").style.display = "block";        
         } else {
             alert("Invalid credentials");
         }
@@ -43,7 +59,7 @@ document.getElementById("secureLoginForm").addEventListener("submit", function (
     .catch(error => console.error("Error:", error));
 });
 
-//Profile
+// Profile
 function viewSecureProfile() {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -64,4 +80,20 @@ function viewSecureProfile() {
     })
     .catch(error => console.error("Error:", error));
 }
+
+// Logout
+function logout() {
+    localStorage.removeItem("token");
+    document.getElementById("logoutButton").style.display = "none"; 
+    alert("Logged out successfully");
+    location.reload();
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    checkLoginStatus();
+
+    if (!localStorage.getItem("token")) {
+        document.getElementById("secureProfileResult").innerHTML = "<p>Click to see your details.</p>";
+    }
+});
 

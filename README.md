@@ -1,5 +1,5 @@
 # SecureApplicationProject
  
-To start the application, navigate to the project folder and run "node server/secure.js" 
-to start the backend server. Then, open the HTML file located in the frontend folder.
+To start the backend(server) of the apllication, navigate into the server dircetory and run "node insecure.js".
 
+To start the frontend of the application, navigate into the frontend dircetory and run "http-server -p 5001". This will run the frontend on port 4000, then navigate to http://localhost:5001
